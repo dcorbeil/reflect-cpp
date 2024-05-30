@@ -29,6 +29,7 @@ struct Parser<R, W, T[_size], ProcessorsType> {
   using ParentType = Parent<W>;
   using CArray = T[_size];
 
+  // bytestring array goes in here. Doesn normal array do the same?
   static Result<internal::Array<CArray>> read(
       const R& _r, const InputVarType& _var) noexcept {
     using StdArray = internal::to_std_array_t<CArray>;

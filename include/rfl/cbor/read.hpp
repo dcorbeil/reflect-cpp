@@ -26,7 +26,7 @@ auto read(const InputVarType& _obj) {
 
 /// Parses an object from CBOR using reflection.
 template <class T, class... Ps>
-Result<internal::wrap_in_rfl_array_t<T>> read(const char* _bytes,
+Result<internal::wrap_in_rfl_array_t<T>> read(const uint8_t* _bytes,
                                               const size_t _size) {
   CborParser parser;
   CborValue value;
@@ -39,7 +39,7 @@ Result<internal::wrap_in_rfl_array_t<T>> read(const char* _bytes,
 
 /// Parses an object from CBOR using reflection.
 template <class T, class... Ps>
-auto read(const std::vector<char>& _bytes) {
+auto read(const std::vector<uint8_t>& _bytes) {
   return read<T, Ps...>(_bytes.data(), _bytes.size());
 }
 

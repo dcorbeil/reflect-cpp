@@ -50,6 +50,7 @@ struct Parser<R, W, std::array<T, _size>, ProcessorsType> {
       return std::move(*ptr);
     };
 
+    // bytestring array goes in here. Doesn normal array do the same?
     return _r.to_array(_var).and_then(parse);
   }
 

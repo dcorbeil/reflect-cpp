@@ -132,7 +132,15 @@ struct Reader {
           return Error(cbor_error_string(err));
         }
         return static_cast<T>(result);
-      }
+      } /*else if (cbor_value_is_byte_string(_var.val_)) {
+        size_t length = 0;
+        uint8_t *buf;
+        const auto err = cbor_value_dup_byte_string(_var.val_, &buf, &length, nullptr);
+        if (err != CborNoError && err != CborErrorOutOfMemory) {
+          return Error(cbor_error_string(err));
+        }
+        return static_cast<T>(*buf);
+      }*/
       return rfl::Error(
           "Could not cast to numeric value. The type must be integral, float "
           "or double.");
@@ -144,7 +152,8 @@ struct Reader {
 
   rfl::Result<InputArrayType> to_array(
       const InputVarType& _var) const noexcept {
-    if (!cbor_value_is_array(_var.val_)) {
+    // if (!cbor_value_is_array(_var.val_)/* && !cbor_value_is_byte_string(_var.val_)*/) { // bytestring array goes in here. Doesn normal array do the same? highly likely
+    if (!cbor_value_is_array(_var.val_) && !cbor_value_is_byte_string(_var.val_)) { // bytestring array goes in here. Doesn normal array do the same? highly likely
       return Error("Could not cast to an array.");
     }
     return InputArrayType{_var.val_};
@@ -163,24 +172,38 @@ struct Reader {
                                   const InputArrayType& _arr) const noexcept {
     CborValue val;
     auto buffer = std::vector<char>();
-    auto err = cbor_value_enter_container(_arr.val_, &val);
-    if (err != CborNoError && err != CborErrorOutOfMemory) {
-      return Error(cbor_error_string(err));
-    }
-    size_t length = 0;
-    err = cbor_value_get_array_length(_arr.val_, &length);
-    if (err != CborNoError && err != CborErrorOutOfMemory) {
-      return Error(cbor_error_string(err));
-    }
-    for (size_t i = 0; i < length; ++i) {
-      const auto err2 = _array_reader.read(to_input_var(&val));
-      if (err2) {
-        return err2;
-      }
-      err = cbor_value_advance(&val);
+    if (cbor_value_is_array(_arr.val_)) {
+      auto err = cbor_value_enter_container(_arr.val_, &val);
       if (err != CborNoError && err != CborErrorOutOfMemory) {
         return Error(cbor_error_string(err));
       }
+      size_t length = 0;
+      err = cbor_value_get_array_length(_arr.val_, &length);
+      if (err != CborNoError && err != CborErrorOutOfMemory) {
+        return Error(cbor_error_string(err));
+      }
+      for (size_t i = 0; i < length; ++i) {
+        const auto err2 = _array_reader.read(to_input_var(&val));
+        if (err2) {
+          return err2;
+        }
+        err = cbor_value_advance(&val);
+        if (err != CborNoError && err != CborErrorOutOfMemory) {
+          return Error(cbor_error_string(err));
+        }
+      }
+    } else if (cbor_value_is_byte_string(_arr.val_)) {
+      size_t length = 0;
+      uint8_t *buf;
+      val = *_arr.val_;
+      // auto err = cbor_value_dup_byte_string(&val, &buf, &length, nullptr);
+      // if (err != CborNoError && err != CborErrorOutOfMemory) {
+      //   // return err;
+      // }
+      const auto err2 = _array_reader.read(to_input_var(&val));
+      // if (err2) {
+      //   return err2;
+      // }
     }
     return std::nullopt;
   }
@@ -203,6 +226,7 @@ struct Reader {
     auto buffer = std::vector<char>();
 
     for (size_t i = 0; i < length; ++i) {
+    // while (!cbor_value_at_end(&val)) {
       err = get_string(&val, &buffer);
       if (err != CborNoError) {
         return Error(cbor_error_string(err));
@@ -241,6 +265,18 @@ struct Reader {
     (*_buffer)[length] = '\0';
     return cbor_value_copy_text_string(_ptr, _buffer->data(), &length, NULL);
   }
+
+  // CborError get_bytestring(const CborValue* _ptr,
+  //                          std::vector<uint8_t>* _buffer) const noexcept {
+  //   size_t length = 0;
+  //   auto err = cbor_value_get_string_length(_ptr, &length);
+  //   if (err != CborNoError && err != CborErrorOutOfMemory) {
+  //     return err;
+  //   }
+  //   _buffer->resize(length + 1);
+  //   (*_buffer)[length] = '\0';
+  //   return cbor_value_dup_byte_string(_ptr, _buffer->data(), &length, NULL);
+  // }
 
   InputVarType to_input_var(CborValue* _ptr) const noexcept {
     values_->emplace_back(rfl::Box<CborValue>::make(*_ptr));
