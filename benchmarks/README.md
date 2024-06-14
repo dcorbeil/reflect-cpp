@@ -1,6 +1,6 @@
 # Benchmarks
 
-reflect-cpp conducts continuuous benchmarking through its [Github Actions](https://github.com/getml/reflect-cpp/actions) pipelines for different compilers, operating systems 
+reflect-cpp conducts continuuous benchmarking through its [Github Actions](https://github.com/getml/reflect-cpp/actions) pipelines for different compilers, operating systems
 and architectures. Currently, we benchmark the following:
 
 1. How reflect-cpp's JSON parser compares to other JSON libraries for C or C++
@@ -8,7 +8,7 @@ and architectures. Currently, we benchmark the following:
 
 ## Viewing the benchmark results
 
-To view the benchmark results, go to the [Actions tab](https://github.com/getml/reflect-cpp/actions) 
+To view the benchmark results, go to the [Actions tab](https://github.com/getml/reflect-cpp/actions)
 of this Github repository, click on a recent run you are interested in and scroll down to view the summary.
 
 ## Running the benchmark results on your own machine
@@ -36,6 +36,7 @@ to only run some of the benchmarks:
 
 ```
 ./build/benchmarks/all/reflect-cpp-all-format-benchmarks --benchmark_filter=canada_read
+./build/benchmarks/all/reflect-cpp-all-format-benchmarks --benchmark_filter=canada_nlohmann_vs_rfl
 ```
 
 ## Results summary
@@ -46,7 +47,7 @@ to only run some of the benchmarks:
 - reflect-cpp is consistently faster than RapidJSON, usually about twice as fast.
 - reflect-cpp is consistently about 10 times faster than nlohmann/json, which is undeniably the most popular JSON library for C++.
 
-In summary, it is fair to say that reflect-cpp is among the fastest JSON libraries for C++. It also considerably more convenient: If you look at the benchmark code, you will find that you can implement the serialization and deserialization using a single line of code with reflect-cpp, but you will need about 50-90 lines of code to do the same with other libraries (including nlohmann/json).  
+In summary, it is fair to say that reflect-cpp is among the fastest JSON libraries for C++. It also considerably more convenient: If you look at the benchmark code, you will find that you can implement the serialization and deserialization using a single line of code with reflect-cpp, but you will need about 50-90 lines of code to do the same with other libraries (including nlohmann/json).
 
 ### How the different formats supported by reflect-cpp compare to each other
 
