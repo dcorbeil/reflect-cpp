@@ -74,6 +74,7 @@ class Writer {
   OutputVarType add_value_to_object(const std::string_view& _name,
                                     const T& _var,
                                     OutputObjectType* _parent) const noexcept {
+    std::cout<< "CBOR: Adding value to object: " << _name << std::endl;
     encoder_->key(_name);
     return new_value(_var);
   }

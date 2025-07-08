@@ -53,6 +53,7 @@ Writer::OutputVarType Writer::add_null_to_array(
 
 Writer::OutputVarType Writer::add_null_to_object(
     const std::string_view& _name, OutputObjectType* _parent) const noexcept {
+  std::cout<< "CBOR: Adding null to object: " << _name << std::endl;
   encoder_->key(_name);
   encoder_->null_value();
   return OutputVarType{};

@@ -48,6 +48,9 @@ struct Parser<R, W, std::optional<T>, ProcessorsType> {
   template <class P>
   static void write(const W& _w, const std::optional<T>& _o,
                     const P& _parent) noexcept {
+    std::cout<<"Parser<optional>::write: "
+             << "Writing optional value: "
+             << (_o ? "has value" : "is null") << std::endl;
     if constexpr (schemaful::IsSchemafulWriter<W>) {
       auto u = ParentType::add_union(_w, _parent);
       using UnionType = typename ParentType::template Union<decltype(u)>;

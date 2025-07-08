@@ -87,6 +87,7 @@ Writer::OutputVarType Writer::add_null_to_array(
 
 Writer::OutputVarType Writer::add_null_to_object(
     const std::string_view& _name, OutputObjectType* _parent) const noexcept {
+  std::cout<< "JSON: Adding value to object: " << _name << std::endl;
   const auto null = yyjson_mut_null(doc_);
   yyjson_mut_obj_add(_parent->val_, yyjson_mut_strcpy(doc_, _name.data()),
                      null);

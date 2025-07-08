@@ -181,25 +181,35 @@ struct NamedTupleParser {
         Parser<R, W, std::remove_cvref_t<decltype(v)>, ProcessorsType>::write(
             _w, v, new_parent);
       }
+    // I just understood what's happening here. The difference between if else if and the else branch
+    // is only that it will always write the value in the else. Apart from that, those two branches are the same.
+    // Basically it contains an extra else to always write something with a new parent.
     } else if constexpr (!_all_required && !_no_field_names &&
                          !is_required<ValueType, _ignore_empty_containers>()) {
       constexpr auto name = FieldType::name_.string_view();
       const auto new_parent = make_parent(name, _ptr);
+      std::cout << "NamedTupleParser::add_field_to_object() !_all_required name: " << name;
       if (!is_empty(value)) {
+        std::cout << " - not empty" << std::endl;
         if constexpr (internal::is_attribute_v<ValueType>) {
           Parser<R, W, ValueType, ProcessorsType>::write(
               _w, value, new_parent.as_attribute());
         } else {
           Parser<R, W, ValueType, ProcessorsType>::write(_w, value, new_parent);
         }
+      } else {
+        std::cout << " - empty" << std::endl;
       }
     } else {
       constexpr auto name = FieldType::name_.string_view();
       const auto new_parent = make_parent(name, _ptr);
+      std::cout << "NamedTupleParser::add_field_to_object() name: " << name;
       if constexpr (internal::is_attribute_v<ValueType>) {
+        std::cout << " - is attribute" << std::endl;
         Parser<R, W, ValueType, ProcessorsType>::write(
             _w, value, new_parent.as_attribute());
       } else {
+        std::cout << " - is not attribute" << std::endl;
         Parser<R, W, ValueType, ProcessorsType>::write(_w, value, new_parent);
       }
     }
@@ -264,6 +274,8 @@ struct NamedTupleParser {
         std::stringstream stream;
         stream << "Field named '" << std::string(current_name)
                << "' not found.";
+        std::cout << "Field named '" << std::string(current_name)
+                  << "' not found.";
         _errors->emplace_back(Error(stream.str()));
       } else {
         if constexpr (!std::is_const_v<ValueType>) {

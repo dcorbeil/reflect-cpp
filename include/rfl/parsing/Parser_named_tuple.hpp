@@ -12,8 +12,9 @@ requires AreReaderAndWriter<R, W, NamedTuple<FieldTypes...>>
 struct Parser<R, W, NamedTuple<FieldTypes...>, ProcessorsType>
     : public NamedTupleParser<
           R, W, /*_ignore_empty_containers=*/false,
-          /*_all_required=*/ProcessorsType::all_required_,
-          /*_no_field_names=*/ProcessorsType::no_field_names_, ProcessorsType,
+          /*_all_required=*/ProcessorsType::all_required_, // ProcessorsType::all_required_ means false
+          /*_no_field_names=*/ProcessorsType::no_field_names_, // ProcessorsType::no_field_names_ means false
+          ProcessorsType,
           FieldTypes...> {
 };
 
