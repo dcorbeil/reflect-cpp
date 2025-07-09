@@ -73,7 +73,7 @@ Writer::OutputArrayType Writer::new_array(const size_t _size) const noexcept {
 }
 
 Writer::OutputObjectType Writer::new_object(const size_t _size) const noexcept {
-  encoder_->begin_object(_size);
+  encoder_->begin_object();
   return OutputObjectType{};
 }
 

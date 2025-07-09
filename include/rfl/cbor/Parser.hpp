@@ -21,7 +21,7 @@ struct Parser<cbor::Reader, cbor::Writer, NamedTuple<FieldTypes...>,
           /*_ignore_empty_containers=*/false,
           // default is false because in include/rfl/parsing/Parser_named_tuple.hpp _all_required is
           // set to ProcessorsType::all_required_ which set to false
-          /*_all_required=*/true,
+          /*_all_required=*/false,
           /*_no_field_names=*/ProcessorsType::no_field_names_, ProcessorsType,
           FieldTypes...> {};
 
