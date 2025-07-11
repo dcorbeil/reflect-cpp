@@ -14,50 +14,6 @@ struct Person {
   rfl::Rename<"children", std::optional<std::vector<Person>>> children;
 };
 
-
-struct optional_test_t {
-    int i;
-    std::optional<int> opt_i;
-    int j;
-    std::optional<int> opt_j;
-    double d;
-    std::optional<double> opt_d;
-};
-
-
-struct optional_test_strings_t {
-    std::string str;
-    std::optional<std::string> opt_str;
-};
-
-TEST(json, test_simple_optional_fields) {
-
-  const optional_test_t test =
-    optional_test_t{
-        .i = 42,
-        .opt_i = 12345,
-        .j = 69,
-        .d = 42.69,
-    };
-  // const optional_test_strings_t test_strings =
-  //   optional_test_strings_t {
-  //       .str = "non-optional string",
-  //       .opt_str = "optional string",
-  //   };
-
-  // std::cout << std::hex << std::setw(2) << std::setfill('0') << std::hex;
-
-  // rfl::cbor::write(test, std::cout << std::hex << std::setw(2) << std::setfill('0') << std::hex) << std::endl;
-  // std::cout<<std::endl;
-  // std::cout<<std::dec;
-
-  std::string json = rfl::json::write(test);
-
-  std::cout<<json<<std::endl;
-
-  // write_and_read(test);
-}
-
 TEST(json, test_optional_fields) {
   const auto bart = Person{.first_name = "Bart"};
 
