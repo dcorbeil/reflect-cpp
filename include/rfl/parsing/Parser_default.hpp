@@ -120,6 +120,8 @@ struct Parser {
       }
 
     } else if constexpr (std::is_class_v<T> && std::is_aggregate_v<T>) {
+      // It seems like the struct is converted to a named tuple here. It also seems like the
+      // size/number of fields is determined somewhere in that call
       const auto ptr_named_tuple = ProcessorsType::template process<T>(
           internal::to_ptr_named_tuple(_var));
       using PtrNamedTupleType = std::remove_cvref_t<decltype(ptr_named_tuple)>;
